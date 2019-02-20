@@ -12,6 +12,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Random;
+
+
 public class MainActivity extends AppCompatActivity {
 
     AsteroidView asteroidView;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         int posx, posy;
         int dx, dy;
         int height, width;
+        boulder[] b;
 
         private long thisTimeFrame;
         public AsteroidView(Context context) {
@@ -46,10 +50,21 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            Random r = new Random();
+            b = new boulder[5];
             posx = 50;
             posy = 50;
             dx = 20;
             dy = 45;
+            for (int i = 0; i < 5; ++i) {
+                b[i] = new boulder();
+                b[i].x = r.nextInt(50);
+                b[i].y = r.nextInt(50);
+                b[i].dx = r.nextInt(30) - 15;
+                b[i].dy = r.nextInt(30) - 15;
+                b[i].diameter = 95;
+            }
+
 
             while (playing)
             {
@@ -58,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 draw();
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
 
                 }
@@ -75,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 dx = -dx;
             if ((posy > height) || (posy < 0))
                 dy = -dy;
+
+            for (int i = 0; i < 5; ++i)
+                b[i].update();
 
         }
         public void draw() {
@@ -93,7 +111,14 @@ public class MainActivity extends AppCompatActivity {
                 canvas.drawLine(0, 0, 300, y, paint);
 
 
-                canvas.drawCircle(posx, posy, 30l, paint);
+                // canvas.drawCircle(posx, posy, 30l, paint);
+                for (int i = 0; i < 5; ++i) {
+                    b[i].width = width;
+                    b[i].height = height;
+                    b[i].draw(canvas, paint);
+                }
+
+                // canvas.drawCircle(b.x, b.y, 50, paint);
 
                 ourHolder.unlockCanvasAndPost(canvas);
             }
