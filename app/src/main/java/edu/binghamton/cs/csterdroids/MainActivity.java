@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         int dx, dy;
         int height, width;
         boulder[] b;
+        boulder spaceShip;
+        private boolean isSpaceShipTouched = false;
 
         private long thisTimeFrame;
         public AsteroidView(Context context) {
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             Random r = new Random();
             b = new boulder[5];
+            spaceShip = new boulder();
+            spaceShip.isSpaceShip = true;
             posx = 50;
             posy = 50;
             dx = 20;
@@ -65,12 +69,20 @@ public class MainActivity extends AppCompatActivity {
                 b[i].diameter = 95;
             }
 
+            spaceShip.x = 100;
+            spaceShip.y = 100;
+
+            spaceShip.dx = 15;
+            spaceShip.dy = 15;
+            spaceShip.diameter = 120;
+
 
             while (playing)
             {
                 if (!paused) {
                     update();
                 }
+                update();
                 draw();
                 try {
                     Thread.sleep(50);
@@ -93,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 0; i < 5; ++i)
                 b[i].update();
+
+            spaceShip.update();
 
         }
         public void draw() {
@@ -118,7 +132,10 @@ public class MainActivity extends AppCompatActivity {
                     b[i].draw(canvas, paint);
                 }
 
-                // canvas.drawCircle(b.x, b.y, 50, paint);
+                paint.setColor(Color.argb(255, 255, 0, 0)); // Red color
+                spaceShip.width = width;
+                spaceShip.height = height;
+                spaceShip.draw(canvas, paint);
 
                 ourHolder.unlockCanvasAndPost(canvas);
             }
@@ -142,8 +159,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onTouchEvent(MotionEvent motionEvent) {
-            if (motionEvent.getAction() == android.view.MotionEvent.ACTION_DOWN)
-                paused = !paused;
+
+            if (motionEvent.getAction() == android.view.MotionEvent.ACTION_DOWN){
+                spaceShip.fx = motionEvent.getX();
+                spaceShip.fy = motionEvent.getY();
+            }
+            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE){
+                spaceShip.x = motionEvent.getX();
+                spaceShip.y = motionEvent.getY();
+            }
+
             return true;
         }
     }
